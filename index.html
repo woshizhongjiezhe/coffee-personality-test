@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#161210" />
+  <meta name="description" content="24 道有点离谱、但可能很准的咖啡人格测试。测出你的咖啡荒谬人格、六维倾向和隐藏人格。" />
+  <title>咖啡荒谬人格研究所</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="logo" href="#home" aria-label="返回首页">
+      <span class="logo-dot"></span>
+      <span>咖啡荒谬人格研究所</span>
+    </a>
+    <div class="topbar-actions">
+      <span class="lab-status"><i></i> LAB ONLINE</span>
+      <button id="topRestartBtn" class="text-button" type="button">重新测试</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="landingScreen" class="screen active" aria-labelledby="heroTitle">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">COFFEE ABSURD PERSONA TEST · V2</p>
+          <h1 id="heroTitle">你喝的可能<br>不是咖啡，<br><em>是人设。</em></h1>
+          <p class="hero-text">
+            24 道有点离谱、但可能很准的问题。测出你的咖啡荒谬人格、
+            六维倾向，以及你一直不愿承认的隐藏属性。
+          </p>
+
+          <div class="hero-actions">
+            <button id="startBtn" class="primary-button" type="button">
+              进入研究所
+              <span>↗</span>
+            </button>
+            <div class="duration">
+              <strong>约 4 分钟</strong>
+              <span>无需登录 · 纯娱乐测试</span>
+            </div>
+          </div>
+
+          <div class="hero-metrics" aria-label="测试信息">
+            <div><strong>24</strong><span>道灵魂拷问题</span></div>
+            <div><strong>12+4</strong><span>常规 / 隐藏人格</span></div>
+            <div><strong>6D</strong><span>咖啡倾向雷达</span></div>
+          </div>
+        </div>
+
+        <div class="hero-stage" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="stamp stamp-a">不构成心理诊断</div>
+          <div class="stamp stamp-b">但可能构成冒犯</div>
+          <div class="specimen-card">
+            <div class="card-label">SPECIMEN #404</div>
+            <div class="cup-illustration">
+              <div class="steam steam-a"></div>
+              <div class="steam steam-b"></div>
+              <div class="cup-body">
+                <div class="coffee-top"><span>?</span></div>
+                <div class="cup-handle"></div>
+              </div>
+              <div class="saucer"></div>
+            </div>
+            <div class="specimen-copy">
+              <strong>待鉴定咖啡人类</strong>
+              <span>症状：每天说“今天不喝了”</span>
+            </div>
+          </div>
+          <span class="floating-tag tag-a">参数控制欲</span>
+          <span class="floating-tag tag-b">拿铁社交值</span>
+          <span class="floating-tag tag-c">续命依赖度</span>
+        </div>
+      </div>
+
+      <div class="ticker" aria-hidden="true">
+        <div>
+          <span>豆单开荒队长</span><b>✦</b>
+          <span>冰美式续命股东</span><b>✦</b>
+          <span>手冲参数公务员</span><b>✦</b>
+          <span>拿铁气氛组组长</span><b>✦</b>
+          <span>器具型消费主义</span><b>✦</b>
+          <span>产区故事易感人群</span><b>✦</b>
+          <span>豆单开荒队长</span><b>✦</b>
+          <span>冰美式续命股东</span><b>✦</b>
+        </div>
+      </div>
+
+      <section class="method-card">
+        <div>
+          <p class="section-index">01 / HOW IT WORKS</p>
+          <h2>表面在玩梗，<br>底层在做画像。</h2>
+        </div>
+        <div class="method-list">
+          <article>
+            <span>01</span>
+            <div><strong>选择真实反应</strong><p>不要选“理想中的你”，选那个会在周一早上真实发生的你。</p></div>
+          </article>
+          <article>
+            <span>02</span>
+            <div><strong>计算六维倾向</strong><p>新奇、仪式、精研、社交、效率、审美共同决定结果。</p></div>
+          </article>
+          <article>
+            <span>03</span>
+            <div><strong>触发隐藏人格</strong><p>某些答案组合会暴露你不愿公开的咖啡秘密。</p></div>
+          </article>
+        </div>
+      </section>
+    </section>
+
+    <section id="quizScreen" class="screen" aria-live="polite">
+      <div class="quiz-layout">
+        <aside class="quiz-aside">
+          <p class="kicker">SUBJECT ANALYSIS</p>
+          <div class="question-counter">
+            <strong id="currentQuestion">01</strong>
+            <span>/ <b id="totalQuestions">24</b></span>
+          </div>
+          <div class="vertical-progress">
+            <div id="verticalProgressFill"></div>
+          </div>
+          <p id="phaseCopy" class="phase-copy">正在确认你对咖啡的基本态度。</p>
+        </aside>
+
+        <div class="quiz-main">
+          <div class="quiz-nav">
+            <button id="backBtn" class="circle-button" type="button" aria-label="返回上一题">←</button>
+            <span id="questionCategory">日常症状观察</span>
+            <button id="exitBtn" class="text-button" type="button">退出</button>
+          </div>
+
+          <div class="horizontal-progress">
+            <div id="horizontalProgressFill"></div>
+          </div>
+
+          <article class="question-panel">
+            <p id="questionNumberLabel" class="question-number-label">QUESTION 01</p>
+            <h2 id="questionText"></h2>
+            <div id="answerList" class="answer-list"></div>
+          </article>
+
+          <p class="quiz-disclaimer">请凭第一反应作答。想太久会触发“过度自我包装”误差。</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="screen">
+      <div class="result-intro">
+        <p class="kicker">ANALYSIS COMPLETE</p>
+        <h1>鉴定完成。<br>情况比想象中复杂。</h1>
+      </div>
+
+      <div class="result-layout">
+        <article id="resultCard" class="result-card">
+          <div class="result-card-head">
+            <span id="resultTypeCode">TYPE 01</span>
+            <span id="hiddenBadge" class="hidden-badge" hidden>隐藏人格已触发</span>
+          </div>
+
+          <div class="result-title-wrap">
+            <p>你的咖啡荒谬人格是</p>
+            <h2 id="resultName"></h2>
+            <strong id="resultSlogan"></strong>
+          </div>
+
+          <div class="result-art">
+            <div id="resultEmoji" class="result-emoji"></div>
+            <div class="result-orbit result-orbit-a"></div>
+            <div class="result-orbit result-orbit-b"></div>
+          </div>
+
+          <p id="resultDescription" class="result-description"></p>
+
+          <div class="result-facts">
+            <div><span>典型症状</span><strong id="resultSymptoms"></strong></div>
+            <div><span>本命咖啡</span><strong id="resultCoffee"></strong></div>
+            <div><span>高危场景</span><strong id="resultScene"></strong></div>
+            <div><span>建议结盟</span><strong id="resultAlly"></strong></div>
+          </div>
+
+          <blockquote id="resultQuote"></blockquote>
+        </article>
+
+        <aside class="analysis-panel">
+          <div class="panel-block">
+            <p class="panel-label">六维人格雷达</p>
+            <canvas id="radarCanvas" width="520" height="420" aria-label="六维人格雷达图"></canvas>
+          </div>
+
+          <div class="panel-block">
+            <p class="panel-label">研究所附加指标</p>
+            <div class="index-list">
+              <div>
+                <span>咖啡依赖值</span>
+                <div class="index-track"><i id="dependencyBar"></i></div>
+                <strong id="dependencyValue">0%</strong>
+              </div>
+              <div>
+                <span>抽象浓度</span>
+                <div class="index-track"><i id="chaosBar"></i></div>
+                <strong id="chaosValue">0%</strong>
+              </div>
+              <div>
+                <span>社交扩散力</span>
+                <div class="index-track"><i id="shareBar"></i></div>
+                <strong id="shareValue">0%</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <button id="posterBtn" class="primary-button" type="button">生成结果海报 <span>↓</span></button>
+            <button id="shareBtn" class="secondary-button" type="button">分享结果</button>
+            <button id="resultRestartBtn" class="text-button underlined" type="button">再测一次</button>
+          </div>
+          <p id="actionFeedback" class="action-feedback" role="status"></p>
+        </aside>
+      </div>
+
+      <section class="secondary-result">
+        <div>
+          <p class="section-index">SECONDARY TYPE</p>
+          <h3>你体内还住着一个<br><span id="secondaryName"></span></h3>
+        </div>
+        <p id="secondaryDescription"></p>
+      </section>
+
+      <canvas id="posterCanvas" width="1080" height="1440" hidden></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <span>COFFEE ABSURD PERSONA LAB © 2026</span>
+    <span>本测试仅供娱乐，不构成心理、医学或职业建议。</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

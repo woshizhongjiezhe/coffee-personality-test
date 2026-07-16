@@ -386,13 +386,13 @@ const QUESTIONS = [
     ]
   },
   {
-    category: "家庭冲煮审计",
+    category: "咖啡翻车处理",
     text: "手里的咖啡不好喝时，你通常会：",
     answers: [
-      answer("调整研磨、水温和注水，逐项排查", { precision: 5 }, { brew: 2 }),
+      answer("调整研磨、水温和注水，逐项排查原因", { precision: 5 }, { brew: 2 }),
       answer("加冰加奶，问题转化为解决方案", { efficiency: 4, social: 1 }, { casual: 1, milk: 1 }),
-      answer("换一套器具，也许问题在硬件", { aesthetic: 3, precision: 2 }, { gear: 2 }),
-      answer("当作实验结果，下一杯直接换个世界", { novelty: 4 }, { chaos: 1, explore: 1 }),
+      answer("换一套器具，问题一定在硬件", { aesthetic: 3, precision: 2 }, { gear: 2 }),
+      answer("从不手冲，下次直接换一家或换一款", { efficiency: 4, novelty: 1 }, { shopOnly: 2, casual: 1 })
     ]
   },
   {

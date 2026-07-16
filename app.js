@@ -1263,29 +1263,50 @@ function renderPosterCanvas() {
   wrapText(ctx, r.quote.replace(/[“”]/g, ""), quoteX + quoteW / 2, quoteY + 56, quoteW - 56, 34, 3);
 
   const qrCardX = 720;
-  const qrCardY = 1148;
-  const qrCardSize = 250;
+  const qrCardY = 1160;
   const qrSize = 170;
+  const qrPadding = 16;
+  const qrCardSize = qrSize + qrPadding * 2;
 
   ctx.fillStyle = "#ffffff";
   ctx.strokeStyle = "#161210";
   ctx.lineWidth = 4;
-  roundRect(ctx, qrCardX, qrCardY, qrCardSize, qrCardSize, 24);
+  roundRect(ctx, qrCardX, qrCardY, qrCardSize, qrCardSize, 22);
   ctx.fill();
   ctx.stroke();
 
   const qrCanvas = createQRCodeCanvas(getSiteShareUrl(), qrSize);
   if (qrCanvas) {
-    ctx.drawImage(qrCanvas, qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+    ctx.drawImage(
+      qrCanvas,
+      qrCardX + qrPadding,
+      qrCardY + qrPadding,
+      qrSize,
+      qrSize
+    );
   } else {
     ctx.fillStyle = "#f2eee6";
-    ctx.fillRect(qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+    ctx.fillRect(
+      qrCardX + qrPadding,
+      qrCardY + qrPadding,
+      qrSize,
+      qrSize
+    );
     ctx.strokeStyle = "#161210";
-    ctx.strokeRect(qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+    ctx.strokeRect(
+      qrCardX + qrPadding,
+      qrCardY + qrPadding,
+      qrSize,
+      qrSize
+    );
     ctx.fillStyle = "#6e665f";
     ctx.font = '700 18px "Noto Sans SC", sans-serif';
     ctx.textAlign = "center";
-    ctx.fillText("二维码加载失败", qrCardX + qrCardSize / 2, qrCardY + 112);
+    ctx.fillText(
+      "二维码加载失败",
+      qrCardX + qrCardSize / 2,
+      qrCardY + qrCardSize / 2
+    );
   }
 
   ctx.fillStyle = "#6e665f";

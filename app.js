@@ -84,9 +84,9 @@ const TYPE_DATA = {
     name: "冰美式续命股东",
     emoji: "⚡",
     slogan: "不是爱喝，是公司业务需要。",
-    description: "你与咖啡的关系高度务实：它负责让你上线、开会、交付和活着下班。温度可以低，浓度不能低；故事可以没有，出杯不能太慢。你可能不研究庄园，但非常清楚哪家店最快、最大杯、最不耽误事。",
+    description: "你与咖啡的关系高度务实：它负责让你上线、开会、交付和活着下班。速溶、便利店、瑞幸 9.9 或大杯冰美式，只要稳定、方便、价格合适，都属于有效方案。你可能不研究庄园，但非常清楚哪种选择最快、最省事、最适合当下。",
     symptoms: "早上自动下单；空腹也敢喝；把大杯理解为风险对冲",
-    coffee: "冰美式、冷萃、浓缩加水、稳定拼配",
+    coffee: "冰美式、冷萃、速溶、挂耳与高性价比连锁咖啡",
     scene: "通勤、会议前、截止日期附近",
     ally: "随缘冲煮哲学家",
     quote: "“风味轮先放一边，我下午三点还有会。”",
@@ -168,7 +168,7 @@ const TYPE_DATA = {
     name: "随缘冲煮哲学家",
     emoji: "🌀",
     slogan: "粉水比随缘，心态必须稳定。",
-    description: "你接受咖啡像生活一样存在波动。没有秤就目测，没有温控壶就等一会儿，豆子放久了也能找到新用途。你不追求完美复刻，但常常凭经验做出意外不错的一杯。",
+    description: "你接受咖啡像生活一样存在波动。没有秤就目测，没有器具就喝速溶、挂耳或连锁咖啡。你不追求专业术语和完美复刻，只关心这一杯是否方便、顺口、适合当前场景。",
     symptoms: "参数大概记得；器具能少一个是一个；难喝就加冰加奶解决",
     coffee: "宽容度高的拼配、冷萃、浸泡式咖啡",
     scene: "露营、办公室、临时来客、懒人周末",
@@ -258,7 +258,8 @@ const QUESTIONS = [
       answer("救命恩人，先喝再讨论人格尊严", { efficiency: 4 }, { dependency: 2, iced: 1 }),
       answer("一天的开机仪式，流程不能被打断", { ritual: 4, aesthetic: 1 }, { ritual: 1 }),
       answer("顺便试试昨天刚到的新豆", { novelty: 4, precision: 1 }, { explore: 1 }),
-      answer("看当天和谁见面，再决定去哪里喝", { social: 4, aesthetic: 1 }, { share: 1 })
+      answer("看当天和谁见面，再决定去哪里喝", { social: 4, aesthetic: 1 }, { share: 1 }),
+      answer("我对咖啡没什么研究，速溶或瑞幸 9.9 能让我醒来就行", { efficiency: 5 }, { beginner: 2, instant: 2, budget: 2, chain: 1, dependency: 1 })
     ]
   },
   {
@@ -268,7 +269,9 @@ const QUESTIONS = [
       answer("越陌生越兴奋，直接点名字最难念的", { novelty: 4, aesthetic: 1 }, { explore: 1 }),
       answer("先问处理法、烘焙度和推荐参数", { precision: 4, novelty: 1 }, { brew: 1 }),
       answer("寻找熟悉的坚果、巧克力、焦糖", { efficiency: 3, ritual: 2 }, { dark: 2 }),
-      answer("把决定权交给同行的人，我负责聊天", { social: 4 }, { share: 1, avoidCoffee: 1 })
+      answer("把决定权交给同行的人，我负责聊天", { social: 4 }, { share: 1, avoidCoffee: 1 }),
+      answer("这些产区我都不熟，直接点最便宜或最常见的那杯", { efficiency: 5 }, { beginner: 2, budget: 2, chain: 1 }),
+      answer("我只分得清拿铁和美式，通常选自己喝过的", { ritual: 2, efficiency: 3 }, { beginner: 2, chain: 1, milk: 1 })
     ]
   },
   {
@@ -278,7 +281,8 @@ const QUESTIONS = [
       answer("听起来像事故现场，必须亲自确认", { novelty: 5 }, { chaos: 2, ferment: 2 }),
       answer("先问它的发酵过程是否可控", { precision: 4, novelty: 1 }, { ferment: 1 }),
       answer("礼貌后退，我只想喝一杯正常咖啡", { efficiency: 3, ritual: 2 }, { dark: 1 }),
-      answer("适合四个人点一杯，大家轮流承担风险", { social: 4, novelty: 1 }, { share: 1, chaos: 1 })
+      answer("适合四个人点一杯，大家轮流承担风险", { social: 4, novelty: 1 }, { share: 1, chaos: 1 }),
+      answer("这些词我不太懂，我会点一杯熟悉的奶咖或 9.9 元连锁咖啡", { efficiency: 4, aesthetic: 1 }, { beginner: 2, budget: 1, chain: 2, milk: 1 })
     ]
   },
   {
@@ -288,7 +292,9 @@ const QUESTIONS = [
       answer("调整研磨、水温和注水，逐项排查", { precision: 5 }, { brew: 2 }),
       answer("加冰加奶，问题转化为解决方案", { efficiency: 4, social: 1 }, { casual: 1, milk: 1 }),
       answer("换一套器具，也许问题在硬件", { aesthetic: 3, precision: 2 }, { gear: 2 }),
-      answer("当作实验结果，下一杯直接换个世界", { novelty: 4 }, { chaos: 1, explore: 1 })
+      answer("当作实验结果，下一杯直接换个世界", { novelty: 4 }, { chaos: 1, explore: 1 }),
+      answer("速溶不好喝就多加奶或糖，没必要排查参数", { efficiency: 4, aesthetic: 1 }, { beginner: 2, instant: 2, sweet: 1, milk: 1 }),
+      answer("外卖这杯不好喝，下次换一家有优惠券的店", { efficiency: 5 }, { beginner: 1, budget: 2, chain: 1 })
     ]
   },
   {
@@ -308,7 +314,8 @@ const QUESTIONS = [
       answer("安静、木质、光线刚好，像私人结界", { ritual: 4, aesthetic: 3 }, { ritual: 1 }),
       answer("开放吧台，可以看清每一步操作", { precision: 4, aesthetic: 1 }, { brew: 1 }),
       answer("长桌很多，随时可能认识新朋友", { social: 5 }, { share: 2 }),
-      answer("出杯快、插座多、位置好找", { efficiency: 5 }, { dependency: 1 })
+      answer("出杯快、插座多、位置好找", { efficiency: 5 }, { dependency: 1 }),
+      answer("有 9.9 元券、离得近、拿了就走的店", { efficiency: 5 }, { budget: 2, chain: 2, beginner: 1 })
     ]
   },
   {
@@ -318,7 +325,9 @@ const QUESTIONS = [
       answer("记录风味和参数，争取复刻", { precision: 4, ritual: 1 }, { describe: 1, brew: 1 }),
       answer("发给朋友，马上组一个局", { social: 5 }, { share: 2 }),
       answer("查这个庄园和产区还有什么豆", { novelty: 4, aesthetic: 1 }, { story: 1, explore: 1 }),
-      answer("记住店名，下次继续点同一杯", { ritual: 3, efficiency: 2 }, { ritual: 1 })
+      answer("记住店名，下次继续点同一杯", { ritual: 3, efficiency: 2 }, { ritual: 1 }),
+      answer("我不记产区，只会截图订单，下次照着点", { efficiency: 4, ritual: 1 }, { beginner: 2, chain: 2 }),
+      answer("如果是速溶，我会记住哪个品牌比较顺口", { efficiency: 4, ritual: 1 }, { beginner: 2, instant: 2 })
     ]
   },
   {
@@ -328,7 +337,8 @@ const QUESTIONS = [
       answer("先找光、调角度、拍完再喝", { aesthetic: 4, social: 2 }, { photo: 2, share: 1, milk: 1 }),
       answer("看两秒，然后观察入口温度", { precision: 4, ritual: 1 }, { describe: 1 }),
       answer("直接喝，拉花的半衰期与我无关", { efficiency: 5 }, { casual: 1 }),
-      answer("把杯子推给朋友，让他先拍", { social: 4, aesthetic: 1 }, { share: 1, milk: 1 })
+      answer("把杯子推给朋友，让他先拍", { social: 4, aesthetic: 1 }, { share: 1, milk: 1 }),
+      answer("我平时喝外带连锁咖啡，基本遇不到完整拉花", { efficiency: 4, aesthetic: 1 }, { beginner: 2, chain: 2, budget: 1 })
     ]
   },
   {
@@ -338,7 +348,9 @@ const QUESTIONS = [
       answer("认真读完，味道之前先理解它从哪里来", { aesthetic: 4, novelty: 2 }, { story: 2 }),
       answer("先看关键信息：品种、处理法、烘焙日期", { precision: 4, efficiency: 1 }, { story: 1 }),
       answer("故事很好，但先告诉我每杯成本", { efficiency: 5 }, {}),
-      answer("适合拿去做一次产区主题分享会", { social: 4, aesthetic: 2 }, { story: 1, share: 2 })
+      answer("适合拿去做一次产区主题分享会", { social: 4, aesthetic: 2 }, { story: 1, share: 2 }),
+      answer("故事先不看，我主要看有没有优惠、到手多少钱", { efficiency: 5 }, { budget: 2, beginner: 1 }),
+      answer("我还没买过咖啡豆，这些信息对我暂时有点陌生", { efficiency: 3, novelty: 1 }, { beginner: 3, noBeanKnowledge: 2 })
     ]
   },
   {
@@ -348,7 +360,8 @@ const QUESTIONS = [
       answer("继续喝，等温度下降后再判断", { precision: 4, ritual: 1 }, { describe: 1 }),
       answer("承认不喜欢，转身点一杯澳白", { efficiency: 3, aesthetic: 2 }, { milk: 2 }),
       answer("研究这种酸来自品种还是萃取", { precision: 4, novelty: 1 }, { brew: 1 }),
-      answer("说‘很有个性’，然后悄悄加水", { social: 3, efficiency: 2 }, { avoidCoffee: 1, casual: 1 })
+      answer("说‘很有个性’，然后悄悄加水", { social: 3, efficiency: 2 }, { avoidCoffee: 1, casual: 1 }),
+      answer("我平时喝加糖奶咖，酸不酸其实分不太清", { aesthetic: 2, efficiency: 3 }, { beginner: 2, milk: 2, sweet: 1, chain: 1 })
     ]
   },
   {
@@ -358,7 +371,9 @@ const QUESTIONS = [
       answer("胶囊、浓缩或便利店，效率优先", { efficiency: 5 }, { dependency: 1 }),
       answer("宁可晚一点，也要完成固定冲煮流程", { ritual: 5 }, { ritual: 2 }),
       answer("带上器具去公司继续完成实验", { precision: 4, ritual: 1 }, { gear: 1, brew: 1 }),
-      answer("不喝了，到目的地和别人一起点", { social: 4 }, { avoidCoffee: 1, share: 1 })
+      answer("不喝了，到目的地和别人一起点", { social: 4 }, { avoidCoffee: 1, share: 1 }),
+      answer("撕一条速溶，热水一冲，三分钟内解决", { efficiency: 6 }, { beginner: 2, instant: 3, dependency: 1 }),
+      answer("打开小程序找 9.9 元券，路上顺手取", { efficiency: 6 }, { beginner: 1, budget: 2, chain: 3 })
     ]
   },
   {
@@ -368,7 +383,8 @@ const QUESTIONS = [
       answer("像冷却后的黄桃、蜂蜜和一点白花", { precision: 4, aesthetic: 2 }, { describe: 2 }),
       answer("挺顺，今天喝着舒服", { ritual: 2, efficiency: 3 }, { casual: 1 }),
       answer("很怪，像水果店在开派对", { novelty: 4, social: 1 }, { chaos: 1, ferment: 1 }),
-      answer("你自己喝一口，我们可以聊半小时", { social: 5 }, { share: 1, describe: 1 })
+      answer("你自己喝一口，我们可以聊半小时", { social: 5 }, { share: 1, describe: 1 }),
+      answer("我只会说苦不苦、甜不甜、顺不顺口", { efficiency: 3, ritual: 1 }, { beginner: 3, describeSimple: 2 })
     ]
   },
   {
@@ -378,7 +394,9 @@ const QUESTIONS = [
       answer("三种滤杯、两把壶和一个忘记买来干嘛的工具", { aesthetic: 3, precision: 2 }, { gear: 3 }),
       answer("固定口粮豆、固定杯子，一切秩序井然", { ritual: 4, efficiency: 1 }, { ritual: 1 }),
       answer("好几包不同产区的豆子同时排队", { novelty: 5 }, { explore: 2 }),
-      answer("咖啡不多，但杯子、托盘和拍照道具不少", { aesthetic: 5 }, { photo: 2, avoidCoffee: 1 })
+      answer("咖啡不多，但杯子、托盘和拍照道具不少", { aesthetic: 5 }, { photo: 2, avoidCoffee: 1 }),
+      answer("速溶条、三合一和办公室马克杯", { efficiency: 5, ritual: 1 }, { beginner: 2, instant: 3, sweet: 1 }),
+      answer("连锁咖啡优惠券截图，比咖啡器具多", { efficiency: 5 }, { beginner: 1, budget: 2, chain: 3 })
     ]
   },
   {
@@ -398,7 +416,8 @@ const QUESTIONS = [
       answer("它真的罕见，而且我从没喝过", { novelty: 5 }, { explore: 1 }),
       answer("产地合作透明，生产者获得合理回报", { aesthetic: 4, social: 1 }, { story: 2 }),
       answer("使用了极其复杂且可验证的制作方案", { precision: 5 }, { brew: 1 }),
-      answer("说服不了，我会计算每毫升价格", { efficiency: 5 }, {})
+      answer("说服不了，我会计算每毫升价格", { efficiency: 5 }, {}),
+      answer("第二杯半价、9.9 元券或足够高的性价比", { efficiency: 6 }, { beginner: 1, budget: 3, chain: 1 })
     ]
   },
   {
@@ -408,7 +427,9 @@ const QUESTIONS = [
       answer("立刻报出固定订单，不给决策制造成本", { efficiency: 5 }, { dependency: 1 }),
       answer("顺便问大家要不要试我新买的豆", { novelty: 3, social: 3 }, { share: 2, explore: 1 }),
       answer("主动接管冲煮，避免参数失控", { precision: 5 }, { brew: 2 }),
-      answer("我不一定喝，但会跟着一起去", { social: 4 }, { avoidCoffee: 2, share: 1 })
+      answer("我不一定喝，但会跟着一起去", { social: 4 }, { avoidCoffee: 2, share: 1 }),
+      answer("公司有速溶就喝速溶，不额外花时间", { efficiency: 6 }, { beginner: 2, instant: 3 }),
+      answer("谁有 9.9 元券就帮我顺便带一杯", { social: 2, efficiency: 4 }, { beginner: 1, budget: 2, chain: 2, share: 1 })
     ]
   },
   {
@@ -418,7 +439,8 @@ const QUESTIONS = [
       answer("高级不高级不重要，好喝舒服就行", { efficiency: 3, ritual: 3 }, { dark: 2 }),
       answer("不同烘焙有不同目标，不必站队", { precision: 4, novelty: 1 }, { describe: 1 }),
       answer("我还是想知道它能不能更明亮一点", { novelty: 4 }, { explore: 1 }),
-      answer("先别争，做个深浅烘对饮活动", { social: 5 }, { share: 2 })
+      answer("先别争，做个深浅烘对饮活动", { social: 5 }, { share: 2 }),
+      answer("我其实不知道深烘浅烘，只知道自己怕酸、喜欢不太苦", { ritual: 2, efficiency: 3 }, { beginner: 3, dark: 1, describeSimple: 1 })
     ]
   },
   {
@@ -428,7 +450,9 @@ const QUESTIONS = [
       answer("自带磨豆机、滤杯和豆子", { ritual: 3, precision: 3 }, { gear: 2, brew: 1 }),
       answer("当地有什么喝什么，这也是体验", { novelty: 4, efficiency: 1 }, { casual: 1, explore: 1 }),
       answer("便利店解决，行程比咖啡重要", { efficiency: 5 }, { casual: 1 }),
-      answer("在社交平台发问，顺便约当地人见面", { social: 5 }, { share: 2 })
+      answer("在社交平台发问，顺便约当地人见面", { social: 5 }, { share: 2 }),
+      answer("找熟悉的连锁店，至少知道菜单怎么点", { efficiency: 5, ritual: 1 }, { beginner: 2, chain: 2 }),
+      answer("行李里放几条速溶，找不到店也不影响", { efficiency: 6 }, { beginner: 1, instant: 3 })
     ]
   },
   {
@@ -438,7 +462,8 @@ const QUESTIONS = [
       answer("小杯照喝，未来的我会处理睡眠", { efficiency: 4 }, { dependency: 2, chaos: 1 }),
       answer("换低因或茶，维持仪式但降低风险", { ritual: 4, efficiency: 1 }, { ritual: 1 }),
       answer("研究不同豆种和萃取方式的咖啡因差异", { precision: 5 }, { dependency: 1 }),
-      answer("约人散步聊天，咖啡只是可选配件", { social: 4 }, { avoidCoffee: 1, share: 1 })
+      answer("约人散步聊天，咖啡只是可选配件", { social: 4 }, { avoidCoffee: 1, share: 1 }),
+      answer("我本来就不太依赖咖啡，困了就休息或喝水", { efficiency: 2, ritual: 1 }, { beginner: 2, avoidCoffee: 2 })
     ]
   },
   {
@@ -448,7 +473,9 @@ const QUESTIONS = [
       answer("某个结构非常有理论价值的滤杯", { precision: 2, aesthetic: 3 }, { gear: 2 }),
       answer("为了拍照买的杯子或托盘", { aesthetic: 5 }, { photo: 2, gear: 1 }),
       answer("没有，低频物品会被迅速处理", { efficiency: 5 }, {}),
-      answer("我甚至记不清，可能还没拆封", { aesthetic: 3, efficiency: 1 }, { gear: 3, chaos: 1 })
+      answer("我甚至记不清，可能还没拆封", { aesthetic: 3, efficiency: 1 }, { gear: 3, chaos: 1 }),
+      answer("买过挂耳或冻干，放到过期才想起来", { efficiency: 4 }, { beginner: 2, instant: 2, casual: 1 }),
+      answer("没有器具，我主要收藏优惠券和外卖订单", { efficiency: 5 }, { beginner: 2, budget: 2, chain: 2 })
     ]
   },
   {
@@ -458,7 +485,8 @@ const QUESTIONS = [
       answer("“你怎么什么奇怪东西都敢喝？”", { novelty: 5 }, { chaos: 1, explore: 1 }),
       answer("“你冲杯咖啡为什么像在做实验？”", { precision: 5 }, { brew: 2 }),
       answer("“你不是喝咖啡，你是在办活动。”", { social: 5 }, { share: 2 }),
-      answer("“你买咖啡主要是为了那个杯子吧？”", { aesthetic: 5 }, { photo: 1, gear: 1 })
+      answer("“你买咖啡主要是为了那个杯子吧？”", { aesthetic: 5 }, { photo: 1, gear: 1 }),
+      answer("“你对咖啡没研究，但 9.9 元券从来不会错过。”", { efficiency: 6 }, { beginner: 2, budget: 3, chain: 2 })
     ]
   },
   {
@@ -468,7 +496,9 @@ const QUESTIONS = [
       answer("每月随机未知豆，开箱前不告诉我", { novelty: 5 }, { explore: 2 }),
       answer("固定可靠的口粮豆，自动送到家", { efficiency: 4, ritual: 2 }, { ritual: 1 }),
       answer("详细参数、课程和专业反馈", { precision: 5 }, { brew: 1 }),
-      answer("城市活动、朋友匹配和限定聚会", { social: 5 }, { share: 2 })
+      answer("城市活动、朋友匹配和限定聚会", { social: 5 }, { share: 2 }),
+      answer("连锁品牌月卡、折扣券和稳定低价", { efficiency: 6 }, { beginner: 1, budget: 3, chain: 2 }),
+      answer("每月一箱速溶或冻干，办公室随手能喝", { efficiency: 6, ritual: 1 }, { beginner: 2, instant: 3 })
     ]
   },
   {
@@ -478,7 +508,8 @@ const QUESTIONS = [
       answer("不断遇见没体验过的新风味", { novelty: 6 }, { explore: 2 }),
       answer("每天拥有一段稳定属于自己的时间", { ritual: 6 }, { ritual: 2 }),
       answer("持续理解并把一件事做得更好", { precision: 6 }, { brew: 2 }),
-      answer("创造人与人见面和分享的理由", { social: 6 }, { share: 2 })
+      answer("创造人与人见面和分享的理由", { social: 6 }, { share: 2 }),
+      answer("便宜、方便、随时能买到，不需要先学知识", { efficiency: 7 }, { beginner: 3, budget: 2, chain: 1, instant: 1 })
     ]
   },
   {
@@ -488,7 +519,9 @@ const QUESTIONS = [
       answer("“我真的只是需要清醒，不想参加学术会议。”", { efficiency: 6 }, { dependency: 2, iced: 1 }),
       answer("“好不好喝很重要，好不好看也同样重要。”", { aesthetic: 6 }, { photo: 1 }),
       answer("“没有牛奶也可以，但有的话为什么不用？”", { aesthetic: 3, efficiency: 2 }, { milk: 3 }),
-      answer("“其实喝什么不重要，重要的是和谁一起。”", { social: 6 }, { avoidCoffee: 2, share: 2 })
+      answer("“其实喝什么不重要，重要的是和谁一起。”", { social: 6 }, { avoidCoffee: 2, share: 2 }),
+      answer("“我对咖啡没什么研究，哪个方便便宜就喝哪个。”", { efficiency: 7 }, { beginner: 3, budget: 2 }),
+      answer("“速溶和瑞幸 9.9 就很适合我，没必要假装专业。”", { efficiency: 7, ritual: 1 }, { beginner: 3, instant: 2, budget: 2, chain: 2 })
     ]
   }
 ];
@@ -666,9 +699,48 @@ function scoreRegularTypes() {
     .sort((a, b) => b.score - a.score);
 }
 
+
+function coffeeFamiliarityProfile() {
+  const f = state.flags;
+  const beginnerScore =
+    (f.beginner || 0) +
+    (f.instant || 0) * 0.8 +
+    (f.chain || 0) * 0.55 +
+    (f.noBeanKnowledge || 0) * 1.2;
+
+  if (beginnerScore >= 16) return "entry";
+  if (beginnerScore >= 8) return "everyday";
+  return "enthusiast";
+}
+
+function coffeeFamiliarityNote() {
+  const profile = coffeeFamiliarityProfile();
+
+  if (profile === "entry") {
+    return "你目前更接近日常入门型咖啡消费者：速溶、连锁咖啡和 9.9 元优惠并不代表“不懂咖啡”，只是你更看重方便、价格和稳定。后续推荐应从低门槛、少术语、容易复购的产品开始。";
+  }
+
+  if (profile === "everyday") {
+    return "你对咖啡有一定偏好，但并不依赖复杂术语或专业器具。比起追逐参数，你更适合从熟悉口味、稳定连锁产品和简单可执行的选择开始探索。";
+  }
+
+  return "";
+}
+
 function choosePrimaryRegular() {
   const dims = normalizedDimensions();
   const f = state.flags;
+  const familiarity = coffeeFamiliarityProfile();
+
+  if (familiarity !== "enthusiast") {
+    const practicalSignal = (f.instant || 0) + (f.budget || 0) + (f.chain || 0);
+    if ((f.milk || 0) + (f.photo || 0) >= 5 && dims.aesthetic >= 55) return "latte";
+    if (dims.social >= 72 && (f.share || 0) >= 4) return "networker";
+    if ((f.dark || 0) >= 3 && dims.ritual >= 52) return "safezone";
+    if ((f.casual || 0) >= 3 && dims.precision <= 45) return "casual";
+    if (practicalSignal >= 7 || dims.efficiency >= 65) return "shareholder";
+  }
+
   const top = Object.entries(dims).sort((a, b) => b[1] - a[1])[0][0];
 
   if (top === "novelty") {
@@ -785,7 +857,10 @@ function renderResult() {
   el("resultName").textContent = r.name;
   el("resultSlogan").textContent = r.slogan;
   el("resultEmoji").textContent = r.emoji;
-  el("resultDescription").textContent = r.description;
+  const familiarityNote = coffeeFamiliarityNote();
+  el("resultDescription").textContent = familiarityNote
+    ? `${r.description} ${familiarityNote}`
+    : r.description;
   el("resultSymptoms").textContent = r.symptoms;
   el("resultCoffee").textContent = r.coffee;
   el("resultScene").textContent = r.scene;
@@ -1033,7 +1108,7 @@ async function generatePoster() {
 
   ctx.fillStyle = "#6e665f";
   ctx.font = '500 18px "Noto Sans SC", sans-serif';
-  ctx.fillText("24 道题 · 12 种常规人格 · 4 种隐藏人格 · 结果仅供娱乐", width / 2, 1375);
+  ctx.fillText("24 道题 · 每题 4—6 个选项 · 12 种常规人格 · 4 种隐藏人格", width / 2, 1375);
 
   const link = document.createElement("a");
   link.download = `咖啡人格-${r.name}.png`;

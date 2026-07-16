@@ -1,4 +1,87 @@
 
+/**
+ * 已测试人数配置
+ *
+ * initialCount：没有接入远程接口时显示的基础人数。
+ * endpoint：留空时仅显示基础人数。
+ *
+ * 接口约定：
+ * GET  -> { "count": 1286 }
+ * POST -> { "count": 1287 }
+ *
+ * 同一浏览器只会在首次完成测试时 POST 一次。
+ */
+const TEST_COUNT_CONFIG = {
+  initialCount: "999+",
+  endpoint: ""
+};
+
+function formatTestCount(value) {
+  const count = Number(value);
+  return Number.isFinite(count) && count >= 0
+    ? Math.round(count).toLocaleString("zh-CN")
+    : TEST_COUNT_CONFIG.initialCount.toLocaleString("zh-CN");
+}
+
+function setTestCount(value) {
+  const target = document.getElementById("testedCount");
+  if (target) target.textContent = formatTestCount(value);
+}
+
+async function loadTestCount() {
+  setTestCount(TEST_COUNT_CONFIG.initialCount);
+
+  if (!TEST_COUNT_CONFIG.endpoint) return;
+
+  try {
+    const response = await fetch(TEST_COUNT_CONFIG.endpoint, {
+      method: "GET",
+      headers: { "Accept": "application/json" },
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error(`Counter GET failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    if (Number.isFinite(Number(data.count))) {
+      setTestCount(data.count);
+    }
+  } catch (error) {
+    console.warn("测试人数接口读取失败，已使用基础人数。", error);
+  }
+}
+
+async function registerCompletedTester() {
+  if (!TEST_COUNT_CONFIG.endpoint) return;
+  if (localStorage.getItem("coffeeTesterCounted") === "1") return;
+
+  try {
+    const response = await fetch(TEST_COUNT_CONFIG.endpoint, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ action: "increment" })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Counter POST failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+    localStorage.setItem("coffeeTesterCounted", "1");
+
+    if (Number.isFinite(Number(data.count))) {
+      setTestCount(data.count);
+    }
+  } catch (error) {
+    console.warn("测试人数接口写入失败，本次未计入远程人数。", error);
+  }
+}
+
 const DIMS = {
   novelty: { name: "新奇", short: "新奇" },
   ritual: { name: "仪式", short: "仪式" },
@@ -105,7 +188,7 @@ const TYPE_DATA = {
     ally: "咖啡局人脉中枢",
     quote: "“味道先别急，让我把这束光等到。”",
     weights: { social: .82, aesthetic: 1, ritual: .28, novelty: .18 },
-    bonus: { milk: .12, photo: .08 }
+    bonus: { milk: .12, photo: .08, atmosphere: .1, sweet: .05 }
   },
   networker: {
     code: "TYPE 08",
@@ -175,7 +258,7 @@ const TYPE_DATA = {
     ally: "冰美式续命股东",
     quote: "“咖啡会原谅我的，反正我也原谅了今天。”",
     weights: { efficiency: .68, ritual: .3, social: .18, precision: -.15, novelty: .22 },
-    bonus: { casual: .15 }
+    bonus: { casual: .15, describeSimple: .08 }
   }
 };
 
@@ -243,6 +326,24 @@ const HIDDEN_TYPES = {
     scene: "正常早餐、规律休息、减少连续摄入",
     ally: "清晨仪式守门员",
     quote: "“真正的效率，不是把身体当作一次性滤纸。”"
+  },
+  immune: {
+    code: "HIDDEN 05",
+    name: "咖啡因绝缘体",
+    emoji: "🛡️",
+    slogan: "别人计算饮用时间，你只计算下一杯喝什么。",
+    description:
+      "从你的回答看，你主观上很少因为时间而调整咖啡选择。下午喝、晚上喝，甚至临睡前喝，你依然保持一种令人费解的从容。你喝咖啡不完全为了续命，也可能只是单纯想喝。本结果只描述你的自我感受，不代表医学上的咖啡因耐受判断。",
+    symptoms:
+      "晚上喝咖啡仍自觉能正常睡；很少主动寻找低因；点咖啡通常不考虑时间",
+    coffee:
+      "按口味选择即可；晚间想喝时也可尝试低因咖啡，把重点放在风味而不是摄入量",
+    scene:
+      "晚间咖啡局、餐后咖啡、深夜聊天",
+    ally:
+      "随缘冲煮哲学家",
+    quote:
+      "“几点喝有什么区别，反正我自觉都睡得着。”"
   }
 };
 
@@ -256,10 +357,10 @@ const QUESTIONS = [
     text: "你与第一杯咖啡的关系最接近：",
     answers: [
       answer("救命恩人，先喝再讨论人格尊严", { efficiency: 4 }, { dependency: 2, iced: 1 }),
-      answer("一天的开机仪式，流程不能被打断", { ritual: 4, aesthetic: 1 }, { ritual: 1 }),
+      answer("早起一杯咖啡，流程不能被打断", { ritual: 4, aesthetic: 1 }, { ritual: 1 }),
       answer("顺便试试昨天刚到的新豆", { novelty: 4, precision: 1 }, { explore: 1 }),
       answer("看当天和谁见面，再决定去哪里喝", { social: 4, aesthetic: 1 }, { share: 1 }),
-      answer("我对咖啡没什么研究，速溶或瑞幸 9.9 能让我醒来就行", { efficiency: 5 }, { beginner: 2, instant: 2, budget: 2, chain: 1, dependency: 1 })
+      answer("速溶或9块9", { efficiency: 5 }, { beginner: 2, instant: 2, budget: 2, chain: 1, dependency: 1 })
     ]
   },
   {
@@ -270,8 +371,7 @@ const QUESTIONS = [
       answer("先问处理法、烘焙度和推荐参数", { precision: 4, novelty: 1 }, { brew: 1 }),
       answer("寻找熟悉的坚果、巧克力、焦糖", { efficiency: 3, ritual: 2 }, { dark: 2 }),
       answer("把决定权交给同行的人，我负责聊天", { social: 4 }, { share: 1, avoidCoffee: 1 }),
-      answer("这些产区我都不熟，直接点最便宜或最常见的那杯", { efficiency: 5 }, { beginner: 2, budget: 2, chain: 1 }),
-      answer("我只分得清拿铁和美式，通常选自己喝过的", { ritual: 2, efficiency: 3 }, { beginner: 2, chain: 1, milk: 1 })
+      answer("我只分得清拿铁和美式", { ritual: 2, efficiency: 3 }, { beginner: 2, chain: 1, milk: 1 })
     ]
   },
   {
@@ -282,18 +382,18 @@ const QUESTIONS = [
       answer("先问它的发酵过程是否可控", { precision: 4, novelty: 1 }, { ferment: 1 }),
       answer("礼貌后退，我只想喝一杯正常咖啡", { efficiency: 3, ritual: 2 }, { dark: 1 }),
       answer("适合四个人点一杯，大家轮流承担风险", { social: 4, novelty: 1 }, { share: 1, chaos: 1 }),
-      answer("这些词我不太懂，我会点一杯熟悉的奶咖或 9.9 元连锁咖啡", { efficiency: 4, aesthetic: 1 }, { beginner: 2, budget: 1, chain: 2, milk: 1 })
+      answer("有奶咖好喝吗", { efficiency: 4, aesthetic: 1 }, { beginner: 2, budget: 1, chain: 2, milk: 1 })
     ]
   },
   {
     category: "家庭冲煮审计",
-    text: "家里冲出来的咖啡不好喝，你通常会：",
+    text: "手里的咖啡不好喝时，你通常会：",
     answers: [
       answer("调整研磨、水温和注水，逐项排查", { precision: 5 }, { brew: 2 }),
       answer("加冰加奶，问题转化为解决方案", { efficiency: 4, social: 1 }, { casual: 1, milk: 1 }),
       answer("换一套器具，也许问题在硬件", { aesthetic: 3, precision: 2 }, { gear: 2 }),
       answer("当作实验结果，下一杯直接换个世界", { novelty: 4 }, { chaos: 1, explore: 1 }),
-      answer("外卖这杯不好喝，下次换一家店", { efficiency: 5 }, { beginner: 1, budget: 2, chain: 1 })
+      answer("这次点的好喝，以后换一家店", { efficiency: 5 }, { beginner: 1, budget: 2, chain: 1 })
     ]
   },
   {
@@ -316,7 +416,7 @@ const QUESTIONS = [
       answer("开放吧台，可以看清每一步操作", { precision: 4, aesthetic: 1 }, { brew: 1 }),
       answer("长桌很多，随时可能认识新朋友", { social: 5 }, { share: 2 }),
       answer("出杯快、插座多、位置好找", { efficiency: 5 }, { dependency: 1 }),
-      answer("有 9.9 元券、离得近、拿了就走的店", { efficiency: 5 }, { budget: 2, chain: 2, beginner: 1 })
+      answer("有9块9券、离得近、拿了就走的店", { efficiency: 5 }, { budget: 2, chain: 2, beginner: 1 })
     ]
   },
   {
@@ -327,7 +427,6 @@ const QUESTIONS = [
       answer("发给朋友，马上组一个局", { social: 5 }, { share: 2 }),
       answer("查这个庄园和产区还有什么豆", { novelty: 4, aesthetic: 1 }, { story: 1, explore: 1 }),
       answer("记住店名，下次继续点同一杯", { ritual: 3, efficiency: 2 }, { ritual: 1 }),
-      answer("我不记产区，只会截图订单，下次照着点", { efficiency: 4, ritual: 1 }, { beginner: 2, chain: 2 }),
     ]
   },
   {
@@ -373,7 +472,6 @@ const QUESTIONS = [
       answer("带上器具去公司继续完成实验", { precision: 4, ritual: 1 }, { gear: 1, brew: 1 }),
       answer("不喝了，到目的地和别人一起点", { social: 4 }, { avoidCoffee: 1, share: 1 }),
       answer("撕一条速溶，热水一冲，三分钟内解决", { efficiency: 6 }, { beginner: 2, instant: 3, dependency: 1 }),
-      answer("打开小程序找 9.9 元券，路上顺手取", { efficiency: 6 }, { beginner: 1, budget: 2, chain: 3 })
     ]
   },
   {
@@ -417,7 +515,8 @@ const QUESTIONS = [
       answer("产地合作透明，生产者获得合理回报", { aesthetic: 4, social: 1 }, { story: 2 }),
       answer("使用了极其复杂且可验证的制作方案", { precision: 5 }, { brew: 1 }),
       answer("说服不了，我会计算每毫升价格", { efficiency: 5 }, {}),
-      answer("第二杯半价、9.9 元券或足够高的性价比", { efficiency: 6 }, { beginner: 1, budget: 3, chain: 1 })
+      answer("第二杯半价", { efficiency: 6 }, { beginner: 1, budget: 3, chain: 1 }),
+      answer("咖啡馆的设计、氛围或景观足够漂亮，坐在那里本身就值得", { aesthetic: 5, social: 1 }, { photo: 1, atmosphere: 2 })
     ]
   },
   {
@@ -445,7 +544,7 @@ const QUESTIONS = [
   },
   {
     category: "旅行生存测试",
-    text: "旅行时找不到满意的咖啡店，你会：",
+    text: "旅行时想喝咖啡，你会：",
     answers: [
       answer("自带磨豆机、滤杯和豆子", { ritual: 3, precision: 3 }, { gear: 2, brew: 1 }),
       answer("当地有什么喝什么，这也是体验", { novelty: 4, efficiency: 1 }, { casual: 1, explore: 1 }),
@@ -463,7 +562,8 @@ const QUESTIONS = [
       answer("换低因或茶，维持仪式但降低风险", { ritual: 4, efficiency: 1 }, { ritual: 1 }),
       answer("研究不同豆种和萃取方式的咖啡因差异", { precision: 5 }, { dependency: 1 }),
       answer("约人散步聊天，咖啡只是可选配件", { social: 4 }, { avoidCoffee: 1, share: 1 }),
-      answer("我本来就不太依赖咖啡，困了就休息或喝水", { efficiency: 2, ritual: 1 }, { beginner: 2, avoidCoffee: 2 })
+      answer("我本来就不太依赖咖啡，困了就休息或喝水", { efficiency: 2, ritual: 1 }, { beginner: 2, avoidCoffee: 2 }),
+      answer("咖啡基本不影响我的睡眠，想喝就喝", { efficiency: 3, ritual: 2 }, { caffeineTolerance: 2, lateCoffee: 1, casual: 1 })
     ]
   },
   {
@@ -509,19 +609,20 @@ const QUESTIONS = [
       answer("每天拥有一段稳定属于自己的时间", { ritual: 6 }, { ritual: 2 }),
       answer("持续理解并把一件事做得更好", { precision: 6 }, { brew: 2 }),
       answer("创造人与人见面和分享的理由", { social: 6 }, { share: 2 }),
-      answer("便宜、方便、随时能买到，不需要先学知识", { efficiency: 7 }, { beginner: 3, budget: 2, chain: 1, instant: 1 })
+      answer("便宜、方便、随时能买到，不需要先学知识", { efficiency: 7 }, { beginner: 3, budget: 2, chain: 1, instant: 1 }),
+      answer("独特的风味饮料，我通常不需要根据时间调整咖啡选择", { ritual: 3, efficiency: 2 }, { caffeineTolerance: 3, lateCoffee: 2 })
     ]
   },
   {
     category: "最终口供确认",
     text: "最后，请选择最接近你的一句自白：",
     answers: [
-      answer("“我真的只是需要清醒，不想参加学术会议。”", { efficiency: 6 }, { dependency: 2, iced: 1 }),
-      answer("“好不好喝很重要，好不好看也同样重要。”", { aesthetic: 6 }, { photo: 1 }),
-      answer("“没有牛奶也可以，但有的话为什么不用？”", { aesthetic: 3, efficiency: 2 }, { milk: 3 }),
-      answer("“其实喝什么不重要，重要的是和谁一起。”", { social: 6 }, { avoidCoffee: 2, share: 2 }),
-      answer("“我对咖啡没什么研究，哪个方便便宜就喝哪个。”", { efficiency: 7 }, { beginner: 3, budget: 2 }),
-      answer("“速溶和瑞幸 9.9 就很适合我，没必要假装专业。”", { efficiency: 7, ritual: 1 }, { beginner: 3, instant: 2, budget: 2, chain: 2 })
+      answer("我真的只是需要清醒，不想参加学术会议。", { efficiency: 6 }, { dependency: 2, iced: 1 }),
+      answer("好不好喝很重要，好不好看也同样重要。", { aesthetic: 6 }, { photo: 1 }),
+      answer("没有牛奶也可以，但有的话为什么不用？", { aesthetic: 3, efficiency: 2 }, { milk: 3 }),
+      answer("其实喝什么不重要，重要的是和谁一起。", { social: 6 }, { avoidCoffee: 2, share: 2 }),
+      answer("速溶、9块9，没必要假装专业。", { efficiency: 7, ritual: 1 }, { beginner: 3, instant: 2, budget: 2, chain: 2 }),
+      answer("晚上喝咖啡也自觉照样能睡，只是不想喝水", { ritual: 3, efficiency: 2 }, { caffeineTolerance: 3, lateCoffee: 2 })
     ]
   }
 ];
@@ -625,6 +726,7 @@ function renderQuestion() {
   el("verticalProgressFill").style.height = `${progress}%`;
   el("phaseCopy").textContent = PHASES[Math.min(3, Math.floor(state.index / 6))];
   el("backBtn").style.visibility = state.index === 0 ? "hidden" : "visible";
+  el("previousQuestionBtn").hidden = state.index === 0;
 
   const list = el("answerList");
   list.innerHTML = "";
@@ -803,6 +905,17 @@ function detectHiddenType() {
       key: "undercover",
       strength: (f.avoidCoffee || 0) * 2 + dims.social / 25,
       active: (f.avoidCoffee || 0) >= 6 && dims.social >= 60
+    },
+    {
+      key: "immune",
+      strength:
+        (f.caffeineTolerance || 0) * 2 +
+        (f.lateCoffee || 0) * 1.5 -
+        (f.dependency || 0) * 0.75,
+      active:
+        (f.caffeineTolerance || 0) >= 5 &&
+        (f.lateCoffee || 0) >= 3 &&
+        (f.dependency || 0) < 8
     }
   ];
 
@@ -846,6 +959,7 @@ function finishQuiz() {
   }));
   localStorage.removeItem("coffeeAbsurdProgress");
   showScreen(el("resultScreen"));
+  registerCompletedTester();
 }
 
 function renderResult() {
@@ -993,12 +1107,49 @@ function wrapText(ctx, text, x, y, maxWidth, lineHeight, maxLines = 99) {
   return Math.min(lines.length, maxLines) * lineHeight;
 }
 
-async function generatePoster() {
-  if (!currentResult) return;
 
-  if (document.fonts?.ready) {
-    try { await document.fonts.ready; } catch (_) {}
+function getSiteShareUrl() {
+  return location.href.split("#")[0];
+}
+
+function createQRCodeCanvas(text, size = 170) {
+  if (!window.QRCode) return null;
+
+  const staging = el("qrCodeStaging") || document.createElement("div");
+  staging.innerHTML = "";
+
+  try {
+    new QRCode(staging, {
+      text,
+      width: size,
+      height: size,
+      colorDark: "#161210",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch (error) {
+    console.warn("二维码生成失败。", error);
+    return null;
   }
+
+  const qrCanvas = staging.querySelector("canvas");
+  if (qrCanvas) return qrCanvas;
+
+  const qrImage = staging.querySelector("img");
+  if (!qrImage) return null;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, size, size);
+  ctx.drawImage(qrImage, 0, 0, size, size);
+  return canvas;
+}
+
+function renderPosterCanvas() {
+  if (!currentResult) return null;
 
   const canvas = el("posterCanvas");
   const ctx = canvas.getContext("2d");
@@ -1098,23 +1249,50 @@ async function generatePoster() {
     ctx.textAlign = "left";
   });
 
+  const quoteX = 100;
+  const quoteY = 1174;
+  const quoteW = 560;
+  const quoteH = 150;
+
   ctx.fillStyle = "#161210";
-  roundRect(ctx, 100, 1218, width - 200, 108, 22);
+  roundRect(ctx, quoteX, quoteY, quoteW, quoteH, 22);
   ctx.fill();
   ctx.fillStyle = "#ffffff";
-  ctx.font = '800 25px "Noto Sans SC", sans-serif';
+  ctx.font = '800 24px "Noto Sans SC", sans-serif';
   ctx.textAlign = "center";
-  wrapText(ctx, r.quote.replace(/[“”]/g, ""), width / 2, 1263, width - 260, 37, 2);
+  wrapText(ctx, r.quote.replace(/[“”]/g, ""), quoteX + quoteW / 2, quoteY + 56, quoteW - 56, 34, 3);
+
+  const qrCardX = 720;
+  const qrCardY = 1148;
+  const qrCardSize = 250;
+  const qrSize = 170;
+
+  ctx.fillStyle = "#ffffff";
+  ctx.strokeStyle = "#161210";
+  ctx.lineWidth = 4;
+  roundRect(ctx, qrCardX, qrCardY, qrCardSize, qrCardSize, 24);
+  ctx.fill();
+  ctx.stroke();
+
+  const qrCanvas = createQRCodeCanvas(getSiteShareUrl(), qrSize);
+  if (qrCanvas) {
+    ctx.drawImage(qrCanvas, qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+  } else {
+    ctx.fillStyle = "#f2eee6";
+    ctx.fillRect(qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+    ctx.strokeStyle = "#161210";
+    ctx.strokeRect(qrCardX + 40, qrCardY + 24, qrSize, qrSize);
+    ctx.fillStyle = "#6e665f";
+    ctx.font = '700 18px "Noto Sans SC", sans-serif';
+    ctx.textAlign = "center";
+    ctx.fillText("二维码加载失败", qrCardX + qrCardSize / 2, qrCardY + 112);
+  }
 
   ctx.fillStyle = "#6e665f";
   ctx.font = '500 18px "Noto Sans SC", sans-serif';
-  ctx.fillText("24 道题 · 每题 4—6 个选项 · 12 种常规人格 · 4 种隐藏人格", width / 2, 1375);
+  ctx.fillText("24 道题 · 12 种常规人格 · 5 种隐藏人格", width / 2, 1382);
 
-  const link = document.createElement("a");
-  link.download = `咖啡人格-${r.name}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
-  el("actionFeedback").textContent = "结果海报已生成。";
+  return canvas;
 }
 
 function roundRect(ctx, x, y, width, height, radius) {
@@ -1139,22 +1317,178 @@ function topDimensionName() {
   return DIMS[entry[0]].name;
 }
 
-async function shareResult() {
-  const text = buildShareText();
+function isWechatBrowser() {
+  return /MicroMessenger/i.test(navigator.userAgent || "");
+}
 
-  if (navigator.share) {
-    try {
-      await navigator.share({ title: "我的咖啡荒谬人格", text });
-      el("actionFeedback").textContent = "分享面板已打开。";
-      return;
-    } catch (error) {
-      if (error?.name === "AbortError") return;
-    }
+function isIOSDevice() {
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent || "") ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
+
+function dataUrlToBlob(dataUrl) {
+  const [header, encoded] = dataUrl.split(",");
+  const mimeMatch = header.match(/data:([^;]+)/);
+  const mime = mimeMatch ? mimeMatch[1] : "image/png";
+  const binary = atob(encoded);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return new Blob([bytes], { type: mime });
+}
+
+function posterFileName() {
+  const resultName = currentResult?.primary?.name || "咖啡人格";
+  return `咖啡人格-${resultName}.png`;
+}
+
+function createPosterAssets() {
+  const canvas = renderPosterCanvas();
+  if (!canvas) return null;
+
+  const dataUrl = canvas.toDataURL("image/png");
+  const blob = dataUrlToBlob(dataUrl);
+  const file = new File([blob], posterFileName(), {
+    type: "image/png",
+    lastModified: Date.now()
+  });
+
+  return { canvas, dataUrl, blob, file };
+}
+
+function openPosterPreview(assets, feedback = "") {
+  if (!assets) return;
+
+  el("posterPreviewImage").src = assets.dataUrl;
+  el("posterPreviewModal").hidden = false;
+  el("wechatShareHint").hidden = !isWechatBrowser();
+  el("posterPreviewFeedback").textContent = feedback;
+  document.body.classList.add("modal-open");
+
+  requestAnimationFrame(() => {
+    el("closePosterPreviewBtn").focus();
+  });
+}
+
+function closePosterPreview() {
+  el("posterPreviewModal").hidden = true;
+  document.body.classList.remove("modal-open");
+}
+
+function canSharePosterFile(file) {
+  if (!navigator.share || !navigator.canShare) return false;
+
+  try {
+    return navigator.canShare({ files: [file] });
+  } catch (_) {
+    return false;
+  }
+}
+
+async function nativeSharePoster(assets) {
+  if (!assets) return false;
+
+  if (!canSharePosterFile(assets.file)) {
+    return false;
   }
 
   try {
+    await navigator.share({
+      title: "我的咖啡荒谬人格",
+      text: buildShareText(),
+      files: [assets.file]
+    });
+    return true;
+  } catch (error) {
+    if (error?.name === "AbortError") return true;
+    console.warn("系统图片分享失败。", error);
+    return false;
+  }
+}
+
+function downloadPosterAssets(assets) {
+  if (!assets) return;
+
+  // 微信内置浏览器和部分 iOS WebView 不可靠地支持 download 属性。
+  // 对这些环境保留高清图片预览，用户可长按保存。
+  if (isWechatBrowser() || isIOSDevice()) {
+    openPosterPreview(
+      assets,
+      isWechatBrowser()
+        ? "请长按图片并选择“保存图片”。"
+        : "请长按图片保存，或使用“分享图片到微信等应用”。"
+    );
+    return;
+  }
+
+  const link = document.createElement("a");
+  link.download = posterFileName();
+  link.href = assets.dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  el("posterPreviewFeedback").textContent = "图片下载已开始。";
+}
+
+async function generatePoster() {
+  const assets = createPosterAssets();
+  if (!assets) return;
+
+  openPosterPreview(
+    assets,
+    isWechatBrowser()
+      ? "微信内请长按海报保存。"
+      : "海报已生成，可直接分享或保存。"
+  );
+  el("actionFeedback").textContent = "结果海报已生成。";
+}
+
+async function shareResult() {
+  const assets = createPosterAssets();
+  if (!assets) return;
+
+  // 微信内置浏览器通常不会开放标准文件分享面板，直接显示长按保存方案。
+  if (isWechatBrowser()) {
+    openPosterPreview(assets, "微信内请长按海报保存，再发送给好友或朋友圈。");
+    el("actionFeedback").textContent = "已打开微信保存与分享说明。";
+    return;
+  }
+
+  const shared = await nativeSharePoster(assets);
+  if (shared) {
+    el("actionFeedback").textContent = "系统分享面板已打开。";
+    return;
+  }
+
+  openPosterPreview(assets, "当前浏览器不支持直接分享图片，请保存图片或复制文案。");
+  el("actionFeedback").textContent = "已打开兼容分享方式。";
+}
+
+async function sharePosterFromPreview() {
+  const assets = createPosterAssets();
+  if (!assets) return;
+
+  if (isWechatBrowser()) {
+    openPosterPreview(assets, "微信内请长按海报保存，再发送给好友或朋友圈。");
+    return;
+  }
+
+  const shared = await nativeSharePoster(assets);
+  if (!shared) {
+    el("posterPreviewFeedback").textContent =
+      "当前浏览器不支持图片直分享，请使用“保存 / 下载图片”。";
+  }
+}
+
+async function copyPosterShareText() {
+  const text = `${buildShareText()}\n${getSiteShareUrl()}`;
+
+  try {
     await navigator.clipboard.writeText(text);
-    el("actionFeedback").textContent = "分享文案已复制。";
+    el("posterPreviewFeedback").textContent = "分享文案和网站地址已复制。";
   } catch (_) {
     const area = document.createElement("textarea");
     area.value = text;
@@ -1162,9 +1496,10 @@ async function shareResult() {
     area.select();
     document.execCommand("copy");
     area.remove();
-    el("actionFeedback").textContent = "分享文案已复制。";
+    el("posterPreviewFeedback").textContent = "分享文案和网站地址已复制。";
   }
 }
+
 
 function exitQuiz() {
   showScreen(el("landingScreen"));
@@ -1174,12 +1509,29 @@ el("startBtn").addEventListener("click", startQuiz);
 el("topRestartBtn").addEventListener("click", startQuiz);
 el("resultRestartBtn").addEventListener("click", startQuiz);
 el("backBtn").addEventListener("click", goBack);
+el("previousQuestionBtn").addEventListener("click", goBack);
 el("exitBtn").addEventListener("click", exitQuiz);
 el("posterBtn").addEventListener("click", generatePoster);
 el("shareBtn").addEventListener("click", shareResult);
+el("closePosterPreviewBtn").addEventListener("click", closePosterPreview);
+el("posterPreviewModal").querySelector(".poster-preview-backdrop")
+  .addEventListener("click", closePosterPreview);
+el("nativeShareImageBtn").addEventListener("click", sharePosterFromPreview);
+el("downloadPosterImageBtn").addEventListener("click", () => {
+  downloadPosterAssets(createPosterAssets());
+});
+el("copyPosterShareTextBtn").addEventListener("click", copyPosterShareText);
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !el("posterPreviewModal").hidden) {
+    closePosterPreview();
+  }
+});
 
 window.addEventListener("resize", () => {
   if (currentResult && el("resultScreen").classList.contains("active")) {
     drawRadar(currentResult.dimensions);
   }
 });
+
+loadTestCount();

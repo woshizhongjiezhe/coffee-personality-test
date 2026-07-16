@@ -19,6 +19,14 @@
       <span class="logo-dot"></span>
       <span>咖啡荒谬人格研究所</span>
     </a>
+
+    <div class="tested-counter" aria-label="已完成测试人数">
+      <span class="tested-counter-dot" aria-hidden="true"></span>
+      <span class="tested-counter-label">已测试</span>
+      <strong id="testedCount">1,286</strong>
+      <span>人</span>
+    </div>
+
     <div class="topbar-actions">
       <span class="lab-status"><i></i> LAB ONLINE</span>
       <button id="topRestartBtn" class="text-button" type="button">重新测试</button>
@@ -49,7 +57,7 @@
 
           <div class="hero-metrics" aria-label="测试信息">
             <div><strong>24</strong><span>道灵魂拷问题</span></div>
-            <div><strong>12+4</strong><span>常规 / 隐藏人格</span></div>
+            <div><strong>12+5</strong><span>常规 / 隐藏人格</span></div>
             <div><strong>6D</strong><span>咖啡倾向雷达</span></div>
           </div>
         </div>
@@ -82,15 +90,31 @@
       </div>
 
       <div class="ticker" aria-hidden="true">
-        <div>
-          <span>豆单开荒队长</span><b>✦</b>
-          <span>冰美式续命股东</span><b>✦</b>
-          <span>手冲参数公务员</span><b>✦</b>
-          <span>拿铁气氛组组长</span><b>✦</b>
-          <span>器具型消费主义</span><b>✦</b>
-          <span>产区故事易感人群</span><b>✦</b>
-          <span>豆单开荒队长</span><b>✦</b>
-          <span>冰美式续命股东</span><b>✦</b>
+        <div class="ticker-track">
+          <div class="ticker-group">
+            <span>豆单开荒队长</span><b>✦</b>
+            <span>冰美式续命股东</span><b>✦</b>
+            <span>手冲参数公务员</span><b>✦</b>
+            <span>拿铁气氛组组长</span><b>✦</b>
+            <span>器具型消费主义</span><b>✦</b>
+            <span>产区故事易感人群</span><b>✦</b>
+          </div>
+          <div class="ticker-group" aria-hidden="true">
+            <span>豆单开荒队长</span><b>✦</b>
+            <span>冰美式续命股东</span><b>✦</b>
+            <span>手冲参数公务员</span><b>✦</b>
+            <span>拿铁气氛组组长</span><b>✦</b>
+            <span>器具型消费主义</span><b>✦</b>
+            <span>产区故事易感人群</span><b>✦</b>
+          </div>
+          <div class="ticker-group" aria-hidden="true">
+            <span>豆单开荒队长</span><b>✦</b>
+            <span>冰美式续命股东</span><b>✦</b>
+            <span>手冲参数公务员</span><b>✦</b>
+            <span>拿铁气氛组组长</span><b>✦</b>
+            <span>器具型消费主义</span><b>✦</b>
+            <span>产区故事易感人群</span><b>✦</b>
+          </div>
         </div>
       </div>
 
@@ -145,6 +169,11 @@
             <p id="questionNumberLabel" class="question-number-label">QUESTION 01</p>
             <h2 id="questionText"></h2>
             <div id="answerList" class="answer-list"></div>
+
+            <button id="previousQuestionBtn" class="previous-question-button" type="button">
+              <span aria-hidden="true">←</span>
+              上一题
+            </button>
           </article>
 
           <p class="quiz-disclaimer">请凭第一反应作答。想太久会触发“过度自我包装”误差。</p>
@@ -237,11 +266,54 @@
     </section>
   </main>
 
+  <div id="posterPreviewModal" class="poster-preview-modal" hidden>
+    <button class="poster-preview-backdrop" type="button" aria-label="关闭海报预览"></button>
+
+    <section class="poster-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="posterPreviewTitle">
+      <div class="poster-preview-head">
+        <div>
+          <p class="panel-label">RESULT POSTER</p>
+          <h2 id="posterPreviewTitle">保存或分享结果图</h2>
+        </div>
+        <button id="closePosterPreviewBtn" class="poster-preview-close" type="button" aria-label="关闭">×</button>
+      </div>
+
+      <div id="wechatShareHint" class="wechat-share-hint" hidden>
+        <strong>微信内操作</strong>
+        <span>长按下方图片选择“保存图片”，保存后即可发送给好友或朋友圈。</span>
+      </div>
+
+      <p id="posterPreviewHint" class="poster-preview-hint">
+        手机端可长按图片保存；也可以使用下方系统分享按钮。
+      </p>
+
+      <div class="poster-preview-image-wrap">
+        <img id="posterPreviewImage" alt="咖啡人格测试结果海报" />
+      </div>
+
+      <div class="poster-preview-actions">
+        <button id="nativeShareImageBtn" class="primary-button" type="button">
+          分享图片到微信等应用 <span>↗</span>
+        </button>
+        <button id="downloadPosterImageBtn" class="secondary-button" type="button">
+          保存 / 下载图片
+        </button>
+        <button id="copyPosterShareTextBtn" class="secondary-button" type="button">
+          复制分享文案
+        </button>
+      </div>
+
+      <p id="posterPreviewFeedback" class="poster-preview-feedback" role="status"></p>
+    </section>
+  </div>
+
   <footer>
     <span>COFFEE ABSURD PERSONA LAB © 2026</span>
     <span>本测试仅供娱乐，不构成心理、医学或职业建议。</span>
   </footer>
 
+  <div id="qrCodeStaging" hidden aria-hidden="true"></div>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

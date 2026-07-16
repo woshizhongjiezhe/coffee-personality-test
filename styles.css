@@ -55,9 +55,9 @@ footer,
 
 .topbar {
   min-height: 82px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  justify-content: space-between;
   gap: 20px;
 }
 
@@ -83,7 +83,46 @@ footer,
 .topbar-actions {
   display: flex;
   align-items: center;
+  justify-self: end;
   gap: 20px;
+}
+
+.tested-counter {
+  justify-self: center;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid rgba(22,18,16,.13);
+  border-radius: 999px;
+  background: rgba(247,243,234,.58);
+  box-shadow: 0 7px 22px rgba(42,28,21,.06);
+  color: var(--muted);
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.tested-counter strong {
+  color: var(--ink);
+  font-family: "Space Grotesk", "Noto Sans SC", sans-serif;
+  font-size: 17px;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+.tested-counter-label {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.tested-counter-dot {
+  width: 7px;
+  height: 7px;
+  align-self: center;
+  border-radius: 50%;
+  background: var(--acid);
+  box-shadow: 0 0 0 4px rgba(255,107,53,.12);
 }
 
 .lab-status {
@@ -426,18 +465,46 @@ footer,
   transform: rotate(-1deg);
 }
 
-.ticker div {
+.ticker-track {
   width: max-content;
   display: flex;
-  gap: 24px;
-  padding: 14px 0;
-  animation: ticker 22s linear infinite;
-  font-weight: 900;
+  flex-wrap: nowrap;
+  animation: ticker 30s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 
-.ticker b { color: var(--acid); }
+.ticker-group {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 14px 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
 
-@keyframes ticker { to { transform: translateX(-50%); } }
+.ticker b {
+  color: var(--acid);
+  flex: 0 0 auto;
+}
+
+/*
+ * 当前轨道包含 3 组完全相同的内容。
+ * 每次只移动总宽度的 1/3，重置后画面与上一帧完全一致，
+ * 从而形成真正的首尾无缝循环。
+ */
+@keyframes ticker {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-33.333333%, 0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation-duration: 60s;
+  }
+}
 
 .method-card {
   margin-top: 92px;
@@ -650,6 +717,33 @@ footer,
 .answer-copy {
   line-height: 1.55;
   font-weight: 600;
+}
+
+.previous-question-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 20px;
+  padding: 0 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 800;
+  transition: transform .16s ease, background .16s ease, border-color .16s ease;
+}
+
+.previous-question-button:hover {
+  transform: translateX(-3px);
+  border-color: var(--acid);
+  background: rgba(255,255,255,.62);
+}
+
+.previous-question-button[hidden] {
+  display: none;
 }
 
 .quiz-disclaimer {
@@ -939,6 +1033,148 @@ footer,
   line-height: 1.9;
 }
 
+/* mobile poster preview and sharing */
+body.modal-open {
+  overflow: hidden;
+}
+
+.poster-preview-modal[hidden] {
+  display: none;
+}
+
+.poster-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+
+.poster-preview-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(22,18,16,.72);
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+}
+
+.poster-preview-dialog {
+  position: relative;
+  z-index: 1;
+  width: min(760px, 100%);
+  max-height: calc(100vh - 44px);
+  overflow: auto;
+  padding: 26px;
+  border: 2px solid var(--ink);
+  border-radius: 28px;
+  background: var(--paper);
+  box-shadow: 0 32px 90px rgba(0,0,0,.34);
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.poster-preview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.poster-preview-head h2 {
+  margin: 8px 0 0;
+  font-size: clamp(25px, 4vw, 38px);
+  line-height: 1.15;
+  letter-spacing: -.035em;
+}
+
+.poster-preview-close {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.poster-preview-close:hover {
+  background: white;
+}
+
+.wechat-share-hint {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid rgba(255,107,53,.32);
+  border-radius: 14px;
+  background: rgba(255,107,53,.1);
+}
+
+.wechat-share-hint strong,
+.wechat-share-hint span {
+  display: block;
+}
+
+.wechat-share-hint strong {
+  margin-bottom: 4px;
+  color: var(--acid);
+}
+
+.wechat-share-hint span {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.poster-preview-hint {
+  margin: 16px 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.poster-preview-image-wrap {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #ded8cd;
+}
+
+.poster-preview-image-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  -webkit-touch-callout: default;
+  user-select: auto;
+}
+
+.poster-preview-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.poster-preview-actions .primary-button {
+  grid-column: 1 / -1;
+}
+
+.poster-preview-actions button {
+  width: 100%;
+}
+
+.poster-preview-feedback {
+  min-height: 21px;
+  margin: 12px 0 0;
+  color: var(--acid);
+  text-align: center;
+  font-size: 12px;
+}
+
 footer {
   min-height: 78px;
   padding: 20px 0;
@@ -951,6 +1187,18 @@ footer {
 }
 
 @media (max-width: 960px) {
+  .topbar {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .tested-counter {
+    padding-inline: 11px;
+  }
+
+  .tested-counter-label {
+    display: none;
+  }
+
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 20px;
@@ -998,9 +1246,33 @@ footer {
 
   .topbar {
     min-height: 68px;
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .logo { font-size: 12px; }
+
+  .tested-counter {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: center;
+    min-height: 32px;
+    margin-top: -5px;
+    margin-bottom: 8px;
+    padding: 6px 11px;
+  }
+
+  .tested-counter-label {
+    display: inline;
+  }
+
+  .tested-counter strong {
+    font-size: 15px;
+  }
+
+  .topbar-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
 
   .lab-status { display: none; }
 
@@ -1062,6 +1334,32 @@ footer {
   }
 
   .answer-copy { font-size: 14px; }
+
+  .previous-question-button {
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .poster-preview-modal {
+    align-items: end;
+    padding: 0;
+  }
+
+  .poster-preview-dialog {
+    width: 100%;
+    max-height: 94vh;
+    padding: 20px 14px calc(18px + env(safe-area-inset-bottom));
+    border-width: 2px 0 0;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .poster-preview-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .poster-preview-actions .primary-button {
+    grid-column: auto;
+  }
 
   .result-intro h1 { font-size: 54px; }
 

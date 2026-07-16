@@ -393,7 +393,6 @@ const QUESTIONS = [
       answer("加冰加奶，问题转化为解决方案", { efficiency: 4, social: 1 }, { casual: 1, milk: 1 }),
       answer("换一套器具，也许问题在硬件", { aesthetic: 3, precision: 2 }, { gear: 2 }),
       answer("当作实验结果，下一杯直接换个世界", { novelty: 4 }, { chaos: 1, explore: 1 }),
-      answer("这次点的好喝，以后换一家店", { efficiency: 5 }, { beginner: 1, budget: 2, chain: 1 })
     ]
   },
   {

@@ -253,7 +253,7 @@ function answer(text, scores = {}, flags = {}) {
 const QUESTIONS = [
   {
     category: "日常症状观察",
-    text: "周一早上，你与第一杯咖啡的关系最接近：",
+    text: "你与第一杯咖啡的关系最接近：",
     answers: [
       answer("救命恩人，先喝再讨论人格尊严", { efficiency: 4 }, { dependency: 2, iced: 1 }),
       answer("一天的开机仪式，流程不能被打断", { ritual: 4, aesthetic: 1 }, { ritual: 1 }),
@@ -299,12 +299,14 @@ const QUESTIONS = [
   },
   {
     category: "消费冲动扫描",
-    text: "看到新款限量配色滤杯(不同的滤杯会直接影响咖啡的口味)，你最可能：",
+    text: "看到新款限量配色滤杯，你最可能：",
     answers: [
       answer("研究结构差异，确认它不是只换颜色", { precision: 3, aesthetic: 2 }, { gear: 1 }),
       answer("颜色已经说明了一切，先买再研究", { aesthetic: 5 }, { gear: 2, photo: 1 }),
       answer("家里那个还能用，不制造新问题", { efficiency: 5 }, { casual: 1 }),
-      answer("发群里问有没有人一起拼单", { social: 4, aesthetic: 1 }, { share: 1, gear: 1 })
+      answer("发群里问有没有人一起拼单", { social: 4, aesthetic: 1 }, { share: 1, gear: 1 }),
+      answer("我连滤杯是什么都不太清楚，也不打算为了器具增加消费", { efficiency: 5 }, { beginner: 2, noBeanKnowledge: 2, budget: 1 }
+)
     ]
   },
   {
@@ -327,7 +329,6 @@ const QUESTIONS = [
       answer("查这个庄园和产区还有什么豆", { novelty: 4, aesthetic: 1 }, { story: 1, explore: 1 }),
       answer("记住店名，下次继续点同一杯", { ritual: 3, efficiency: 2 }, { ritual: 1 }),
       answer("我不记产区，只会截图订单，下次照着点", { efficiency: 4, ritual: 1 }, { beginner: 2, chain: 2 }),
-      answer("如果是速溶，我会记住哪个品牌比较顺口", { efficiency: 4, ritual: 1 }, { beginner: 2, instant: 2 })
     ]
   },
   {
@@ -358,7 +359,7 @@ const QUESTIONS = [
     text: "朋友点了极浅烘单品，你喝一口觉得太酸，你会：",
     answers: [
       answer("继续喝，等温度下降后再判断", { precision: 4, ritual: 1 }, { describe: 1 }),
-      answer("承认不喜欢，转身点一杯澳白", { efficiency: 3, aesthetic: 2 }, { milk: 2 }),
+      answer("承认不喜欢，转身点一杯澳白或拿铁", { efficiency: 3, aesthetic: 2 }, { milk: 2 }),
       answer("研究这种酸来自品种还是萃取", { precision: 4, novelty: 1 }, { brew: 1 }),
       answer("说‘很有个性’，然后悄悄加水", { social: 3, efficiency: 2 }, { avoidCoffee: 1, casual: 1 }),
       answer("我平时喝加糖奶咖，酸不酸其实分不太清", { aesthetic: 2, efficiency: 3 }, { beginner: 2, milk: 2, sweet: 1, chain: 1 })
@@ -422,14 +423,14 @@ const QUESTIONS = [
   },
   {
     category: "办公室现场记录",
-    text: "办公室有人说“谁要咖啡”，你会：",
+    text: "办公室有人说“要喝咖啡，有没有人一起”，你会：",
     answers: [
-      answer("立刻报出固定订单，不给决策制造成本", { efficiency: 5 }, { dependency: 1 }),
-      answer("顺便问大家要不要试我新买的豆", { novelty: 3, social: 3 }, { share: 2, explore: 1 }),
+      answer("立刻报出固定订单", { efficiency: 5 }, { dependency: 1 }),
+      answer("问大家要不要试我新买的豆", { novelty: 3, social: 3 }, { share: 2, explore: 1 }),
       answer("主动接管冲煮，避免参数失控", { precision: 5 }, { brew: 2 }),
       answer("我不一定喝，但会跟着一起去", { social: 4 }, { avoidCoffee: 2, share: 1 }),
       answer("公司有速溶就喝速溶，不额外花时间", { efficiency: 6 }, { beginner: 2, instant: 3 }),
-      answer("谁有 9.9 元券就帮我顺便带一杯", { social: 2, efficiency: 4 }, { beginner: 1, budget: 2, chain: 2, share: 1 })
+      answer("我有 9.9 元券帮我顺便带一杯", { social: 2, efficiency: 4 }, { beginner: 1, budget: 2, chain: 2, share: 1 })
     ]
   },
   {
@@ -484,7 +485,7 @@ const QUESTIONS = [
     answers: [
       answer("“你怎么什么奇怪东西都敢喝？”", { novelty: 5 }, { chaos: 1, explore: 1 }),
       answer("“你冲杯咖啡为什么像在做实验？”", { precision: 5 }, { brew: 2 }),
-      answer("“你不是喝咖啡，你是在办活动。”", { social: 5 }, { share: 2 }),
+      answer("“你不是喝咖啡，你是在办活动，这么大排场。”", { social: 5 }, { share: 2 }),
       answer("“你买咖啡主要是为了那个杯子吧？”", { aesthetic: 5 }, { photo: 1, gear: 1 }),
       answer("“你对咖啡没研究，但 9.9 元券从来不会错过。”", { efficiency: 6 }, { beginner: 2, budget: 3, chain: 2 })
     ]
